@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.329
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Seedborne", "HackWeekGame\Seedborne.csproj", "{A3C6F876-D1F5-4ACC-B30C-6A0938CA7861}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeedborneTests", "HackWeekTests\SeedborneTests.csproj", "{2052A7C1-40FE-45C0-B165-4EC0CF2A4A00}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A3C6F876-D1F5-4ACC-B30C-6A0938CA7861}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3C6F876-D1F5-4ACC-B30C-6A0938CA7861}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3C6F876-D1F5-4ACC-B30C-6A0938CA7861}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3C6F876-D1F5-4ACC-B30C-6A0938CA7861}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2052A7C1-40FE-45C0-B165-4EC0CF2A4A00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2052A7C1-40FE-45C0-B165-4EC0CF2A4A00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2052A7C1-40FE-45C0-B165-4EC0CF2A4A00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2052A7C1-40FE-45C0-B165-4EC0CF2A4A00}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {486B9F67-7384-41CB-98E8-FA5BFCA93B8F}
+	EndGlobalSection
+EndGlobal
