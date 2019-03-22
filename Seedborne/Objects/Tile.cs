@@ -70,5 +70,10 @@ namespace Seedborne.Objects
                 AdjacentTiles[4]++;
             }
         }
+
+        public bool IsForestTile()
+        {
+            return (GroundType == "forest");
+        }
     }
 }

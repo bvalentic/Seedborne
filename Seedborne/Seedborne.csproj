@@ -47,11 +47,11 @@
     <Compile Include="MainMenu.cs" />
     <Compile Include="Objects\Forest.cs" />
     <Compile Include="Objects\Tile.cs" />
-    <Compile Include="Objects\TileTypes\ForestTile.cs" />
-    <Compile Include="Objects\TileTypes\GrassTile.cs" />
-    <Compile Include="Objects\TileTypes\SoilTile.cs" />
-    <Compile Include="Objects\TileTypes\TreeTile.cs" />
-    <Compile Include="Objects\TileTypes\WaterTile.cs" />
+    <Compile Include="Objects\WorldTiles\ForestTile.cs" />
+    <Compile Include="Objects\WorldTiles\GrassTile.cs" />
+    <Compile Include="Objects\WorldTiles\SoilTile.cs" />
+    <Compile Include="Objects\WorldTiles\TreeTile.cs" />
+    <Compile Include="Objects\WorldTiles\WaterTile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Objects\World.cs" />
   </ItemGroup>

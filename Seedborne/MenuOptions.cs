@@ -6,7 +6,7 @@ namespace Seedborne
     {
         public static bool Begin(ConsoleRetriever consoleRetriever)
         {
-            return KeepGoing("Welcome to Seedborne! \nWould you like to play?", consoleRetriever);
+            return KeepGoing("Welcome to Seedborne! \nWould you like to play? ", consoleRetriever);
         }
 
         public static bool KeepGoing(string inputQuestion, ConsoleRetriever consoleRetriever)
@@ -15,7 +15,7 @@ namespace Seedborne
             bool? playing = null;
             while (playing == null)
             {
-                Console.WriteLine(inputQuestion);
+                Console.Write(inputQuestion);
                 string response = consoleRetriever.GetResponse();
                 playing = CheckYesOrNo(response);
             }

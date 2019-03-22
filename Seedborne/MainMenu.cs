@@ -15,13 +15,13 @@ namespace Seedborne
                 Console.WriteLine("Great!");
 
                 //actual game goes here
-                bool generate = MenuOptions.KeepGoing("Generate world?", consoleRetriever);
+                bool generate = MenuOptions.KeepGoing("Generate world? ", consoleRetriever);
                 if (generate)
                 {
-                    Console.WriteLine("Input height: ");
+                    Console.Write("Input height: ");
                     int.TryParse(Console.ReadLine(), out var height);
 
-                    Console.WriteLine("Input length: ");
+                    Console.Write("Input length: ");
                     int.TryParse(Console.ReadLine(), out var length);
 
                     World world= new World(length, height);
@@ -29,10 +29,12 @@ namespace Seedborne
                     world.FillWorld(consoleRetriever);
                 }
 
-                playing = MenuOptions.KeepGoing("Would you like to keep playing?", consoleRetriever);
+                playing = MenuOptions.KeepGoing("Would you like to keep playing? ", consoleRetriever);
             }
 
             MenuOptions.Exit();
+
+            
         }
     }
 }

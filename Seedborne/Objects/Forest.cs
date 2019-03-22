@@ -3,16 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Seedborne.Objects.TileTypes;
 
 namespace Seedborne.Objects
 {
-    class Forest
+    public class Forest
     {
+        protected Tile HomeTile;
 
-
-        public bool IsForestTile(Tile tile)
+        public Forest(World world, int x, int y)
         {
-            return (tile.GetGroundType() == "forest");
+            HomeTile = world.Tiles[x, y];
+        }
+
+        public Tile GetHomeTile()
+        {
+            return HomeTile;
         }
     }
 }

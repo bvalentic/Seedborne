@@ -57,7 +57,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HackWeekGame\Seedborne.csproj">
+    <ProjectReference Include="..\Seedborne\Seedborne.csproj">
       <Project>{a3c6f876-d1f5-4acc-b30c-6a0938ca7861}</Project>
       <Name>Seedborne</Name>
     </ProjectReference>
