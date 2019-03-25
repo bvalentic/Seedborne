@@ -79,7 +79,7 @@ namespace HackWeekTests
         public void Test_Initial()
         {
             var testWorld = new World(10, 10);
-            testWorld.Initial();
+            testWorld.AssignTiles();
             testWorld.Tiles[0, 0] = new WaterTile(0,0);
 
             Assert.AreEqual("water",testWorld.GetTile(0,0).GetGroundType());
@@ -159,7 +159,7 @@ namespace HackWeekTests
         public void Test_Refine()
         {
             var testWorld = new World(10, 10);
-            testWorld.Initial();
+            testWorld.AssignTiles();
             testWorld.Refine();
             testWorld.Tiles[0, 0] = new WaterTile(0, 0);
 
@@ -249,6 +249,14 @@ namespace HackWeekTests
             var isForest = testForestTile.IsForestTile();
 
             Assert.AreEqual(true, isForest);
+        }
+
+        [TestMethod]
+        public void Test_Depth()
+        {
+            var testTile = new Tile(1, 1) {Depth = 1};
+
+            Assert.AreEqual(1, testTile.Depth);
         }
 }
 

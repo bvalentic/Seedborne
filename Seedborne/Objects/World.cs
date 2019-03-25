@@ -9,7 +9,8 @@ namespace Seedborne.Objects
         public int Height { get; set; }
 
         public Tile[,] Tiles;
-        public int[] TileStats = new int[5];
+        //currently array is in order {water, soil, grass, trees, forests, depth}
+        public int[] TileStats = new int[6];
 
         public World(int length, int height)
         {
@@ -113,8 +114,12 @@ namespace Seedborne.Objects
                         TileStats[3]++;
                     else if (tileType == "forest")
                         TileStats[4]++;
+
+                    TileStats[5] += Tiles[i, j].Depth;
                 }
             }
+
+            TileStats[5] /= (Length * Height);
         }
 
         public void AllWater()
@@ -131,20 +136,37 @@ namespace Seedborne.Objects
         public void FillWorld(ConsoleRetriever consoleRetriever)
         {
             bool refineKeepGoing;
-            Initial();
-            //Display();
-            //Refine();
+            AllWater();
+            
+            AssignDepth();
+            AssignTiles();
+
+            Smooth();
             do
             {
                 Display();
                 refineKeepGoing = MenuOptions.KeepGoing("Refine? ", consoleRetriever);
                 if (refineKeepGoing) Refine();
             } while (refineKeepGoing);
-            
+
         }
 
-        public void Initial()
-        {//initial world generation
+        public void AssignDepth()
+        {//gives each tile a "depth" or elevation which is used to determine tile type
+            var rng = new Random();
+
+            for (var i = 0; i < Height; i++)
+            {
+                for (var j = 0; j < Length; j++)
+                {
+                    var depthSeed = rng.Next(1, 6);
+                    Tiles[i, j].Depth = depthSeed;
+                }
+            }
+        }
+
+        public void AssignTiles()
+        {//initial tile generation
             var rng = new Random();
             
             for (var i = 0; i < Height; i++)
@@ -167,6 +189,41 @@ namespace Seedborne.Objects
                     else if (tileSeed < 100)
                     {
                         Tiles[i, j] = new TreeTile(i, j);
+                    }
+                }
+            }
+        }
+
+        public void Smooth()
+        {//takes depth of surrounding tiles and has good chance of changing tile to avg. depth or within 1 level of surrounding tiles
+            for (var i = 0; i < Height; i++)
+            {
+                for (var j = 0; j < Length; j++)
+                {
+                    var tile = Tiles[i, j];
+                    var tileDepth = tile.Depth;
+                    double avgDepth;
+
+                    var rng = new Random();
+                    var depthSeed = rng.Next(1, 100);
+
+                    //need to reset the Adjacent Tile value 
+                    Array.Clear(tile.AdjacentTiles, 0, tile.AdjacentTiles.Length);
+
+                    if (i < 1 || i == Height - 1)
+                    {
+                        avgDepth = GetAdjacentTiles(tile)[5] / 5.0;
+                    }
+                    else avgDepth = GetAdjacentTiles(tile)[5] / 8.0;
+
+                    if (depthSeed >= 90) continue;
+                    if (tileDepth - avgDepth > 1)
+                    {
+                        tile.Depth--;
+                    }
+                    else if (avgDepth - tileDepth > 1)
+                    {
+                        tile.Depth++;
                     }
                 }
             }
@@ -203,9 +260,29 @@ namespace Seedborne.Objects
                             Tiles[i,j] = new SoilTile(i,j);
                         }
                     }
+                    //else if (tile.GetGroundType() == "soil")
+                    //{
+                    //    /*
+                    //     soil could either spontaneously become water or grass
+                    //     depending on conditions
+                    //     */
+                    //    if (refineSeed < 5)
+                    //    {
+                    //        Tiles[i,j] = new WaterTile(i,j);
+                    //    }
+                    //    else if (refineSeed < 20)
+                    //    {
+                    //        Tiles[i,j] = new GrassTile(i,j);
+                    //        continue;
+                    //    }
+                    //}
                     else 
                     {
-                        //chance for tile surrounded by water to become water
+                        /*
+                         chance for tile surrounded by water to become water
+                         water eventually overruns the world if refined enough times
+                         need to find a way for it to stagnate
+                        */
                         if (waterValue == 8 ||(waterValue >= 3 && refineSeed < 33))
                         {
                             Tiles[i,j] = new WaterTile(i,j);
@@ -249,7 +326,42 @@ namespace Seedborne.Objects
             }
             UpdateStats();
             Console.OutputEncoding = System.Text.Encoding.UTF8;
-            Console.WriteLine($"Total: {Height*Length}  Water: {TileStats[0]}  Soil: {TileStats[1]}  Grass: {TileStats[2]}  Trees: {TileStats[3]}  Forests: {TileStats[4]}");
+            Console.WriteLine($"Total: {Height*Length}  Water: {TileStats[0]}  Soil: {TileStats[1]}  Grass: {TileStats[2]}  Trees: {TileStats[3]} \n" +
+                              $"Forests: {TileStats[4]}  Avg. Depth: {TileStats[5]}");
+        }
+
+        public void DisplayDepth()
+        {
+            for (var i = 0; i < Height; i++)
+            {
+                for (var j = 0; j < Length; j++)
+                {
+                    var tileDepth = Tiles[i, j].Depth;
+                    switch (tileDepth)
+                    {
+                        case 1:
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            break;
+                        case 2:
+                            Console.BackgroundColor = ConsoleColor.DarkGray;
+                            break;
+                        case 3:
+                            Console.BackgroundColor = ConsoleColor.DarkYellow;
+                            break;
+                        case 4:
+                            Console.BackgroundColor = ConsoleColor.Gray;
+                            Console.ForegroundColor = ConsoleColor.Black;
+                            break;
+                        case 5:
+                            Console.BackgroundColor = ConsoleColor.White;
+                            Console.ForegroundColor = ConsoleColor.Black;
+                            break;
+                    }
+                    Console.Write(tileDepth);
+                    Console.ResetColor();
+                }
+                Console.Write("\n");
+            }
         }
 
         public void GrowForest(int x, int y)

@@ -8,8 +8,9 @@ namespace Seedborne.Objects
         protected string GroundType { get; set; }
         protected char Symbol { get; set; }
 
-        //currently array is in order {water, soil, grass, tree, forest}
-        public int[] AdjacentTiles = new int[5];
+        //currently array is in order {water, soil, grass, tree, forest, depth}
+        public int[] AdjacentTiles = new int[6];
+        public int Depth { get; set; }
 
         public Tile(int x, int y)
         {
@@ -47,6 +48,7 @@ namespace Seedborne.Objects
             return AdjacentTiles;
         }
 
+
         public void AddTileValue(Tile tile)
         {
             if (tile.GroundType == "water")
@@ -69,6 +71,8 @@ namespace Seedborne.Objects
             {
                 AdjacentTiles[4]++;
             }
+
+            AdjacentTiles[5] += tile.Depth;
         }
 
         public bool IsForestTile()
