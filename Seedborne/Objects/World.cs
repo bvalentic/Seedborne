@@ -248,9 +248,9 @@ namespace Seedborne.Objects
 
             if (tile.GetGroundType() == "water" && tileDepth > avgDepth)
             {//if tile is higher than average tiles and water, "flow" water away from tile
-                if (depthSeed < 33) tile = new SoilTile(i, j);
-                else if (depthSeed < 66) tile = new GrassTile(i, j);
-                else tile = new TreeTile(i, j);
+                if (depthSeed < 33) Tiles[i,j] = new SoilTile(i, j);
+                else if (depthSeed < 66) Tiles[i, j] = new GrassTile(i, j);
+                else Tiles[i, j] = new TreeTile(i, j);
 
                 //"flow" only goes in cardinal direction currently
                 var flowSeed = rng.Next(1, 100);

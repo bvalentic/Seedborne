@@ -9,11 +9,26 @@ namespace HackWeekTests
     public class ConsoleRetrieverTests
     {
         [TestMethod]
-        public void Test_ConsoleRetriever()
+        public void Test_PositiveConsoleRetriever()
         {
+            var testResponseRetriever = new TestMethods.TestPositiveResponseRetriever();
 
+            var testString = testResponseRetriever.GetResponse();
+
+            Assert.AreEqual("yes", testString);
+        }
+
+        [TestMethod]
+        public void Test_NegativeConsoleRetriever()
+        {
+            var testResponseRetriever = new TestMethods.TestNegativeResponseRetriever();
+
+            var testString = testResponseRetriever.GetResponse();
+
+            Assert.AreEqual("no", testString);
         }
     }
+
     [TestClass]
     public class MenuOptionsTests
     {
@@ -164,6 +179,21 @@ namespace HackWeekTests
             testWorld.Tiles[0, 0] = new WaterTile(0, 0);
 
             Assert.AreEqual("water", testWorld.GetTile(0, 0).GetGroundType());
+        }
+
+        [TestMethod]
+        public void Test_FlowWater()
+        {
+            var testWorld = new World(5,5);
+            testWorld.AssignTiles();
+            testWorld.AssignDepth();
+
+            testWorld.Tiles[1, 1] = new WaterTile(1, 1) {Depth = 5};
+            var controlGroup = testWorld.Tiles[1,1];
+
+            testWorld.FlowWater(1,1);
+
+            Assert.AreNotEqual(controlGroup.GetGroundType(), testWorld.Tiles[1,1].GetGroundType());
         }
     }
 

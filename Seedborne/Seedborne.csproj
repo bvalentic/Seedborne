@@ -54,6 +54,7 @@
     <Compile Include="Objects\WorldTiles\WaterTile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Objects\World.cs" />
+    <Compile Include="Rng.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
