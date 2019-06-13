@@ -185,15 +185,65 @@ namespace HackWeekTests
         public void Test_FlowWater()
         {
             var testWorld = new World(5,5);
+            var controlGroup = new WaterTile(1, 1) { Depth = 5 };
             testWorld.AssignTiles();
             testWorld.AssignDepth();
 
-            testWorld.Tiles[1, 1] = new WaterTile(1, 1) {Depth = 5};
-            var controlGroup = testWorld.Tiles[1,1];
+            for (var i = 0; i < 10; i++)
+            {
+                testWorld.Tiles[1, 1] = new WaterTile(1, 1) {Depth = 5};
+                testWorld.FlowWater(1,1);
+            }
 
-            testWorld.FlowWater(1,1);
+            
 
             Assert.AreNotEqual(controlGroup.GetGroundType(), testWorld.Tiles[1,1].GetGroundType());
+        }
+
+        [TestClass]
+        public class FlowTests
+        {
+            public World TestWorld = new World(5, 5);
+            public int TestAvgDepth = 1;
+            public const int SoilDepthSeed = 15;
+            public const int GrassDepthSeed = 50;
+            public const int TreeDepthSeed = 95;
+
+            [TestMethod]
+            public void Test_SwapTile_Under33()
+            {
+                var controlGroup = new SoilTile(1, 1) { Depth = 5 };
+                TestWorld.AssignTiles();
+                TestWorld.AssignDepth();
+                TestWorld.Tiles[1, 1] = new WaterTile(1, 1) {Depth = 5};
+
+                TestWorld.SwapTile(TestWorld.Tiles[1,1], TestAvgDepth, SoilDepthSeed);
+                Assert.AreEqual(controlGroup.GetGroundType(), TestWorld.Tiles[1,1].GetGroundType());
+            }
+
+            [TestMethod]
+            public void Test_SwapTile_Under66()
+            {
+                var controlGroup = new GrassTile(1, 1) { Depth = 5 };
+                TestWorld.AssignTiles();
+                TestWorld.AssignDepth();
+                TestWorld.Tiles[1, 1] = new WaterTile(1, 1) { Depth = 5 };
+
+                TestWorld.SwapTile(TestWorld.Tiles[1, 1], TestAvgDepth, GrassDepthSeed);
+                Assert.AreEqual(controlGroup.GetGroundType(), TestWorld.Tiles[1, 1].GetGroundType());
+            }
+
+            [TestMethod]
+            public void Test_SwapTile_Under100()
+            {
+                var controlGroup = new TreeTile(1, 1) { Depth = 5 };
+                TestWorld.AssignTiles();
+                TestWorld.AssignDepth();
+                TestWorld.Tiles[1, 1] = new WaterTile(1, 1) { Depth = 5 };
+
+                TestWorld.SwapTile(TestWorld.Tiles[1, 1], TestAvgDepth, TreeDepthSeed);
+                Assert.AreEqual(controlGroup.GetGroundType(), TestWorld.Tiles[1, 1].GetGroundType());
+            }
         }
     }
 

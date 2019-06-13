@@ -139,13 +139,30 @@ namespace Seedborne.Objects
             AssignDepth();
             Smooth();
             DisplayDepth();
+            Display();
 
-            for (var i = 0; i < 10; i++)
+            Console.Write("Refining ");
+
+            for (var i = 0; i < 9; i++)
             {
                 Refine();
-                Display();
+                System.Threading.Thread.Sleep(new Random().Next(750,1000));
+                Console.Write(". ");
             }
-            
+
+            Console.WriteLine();
+            DisplayDepth();
+            Display();
+
+            //for (int i = 0; i < 9; i++)
+            //{
+            //    Refine();
+            //    Display();
+            //}
+
+            //DisplayDepth();
+            //Display();
+
         }
 
         public void AssignDepth()
@@ -232,7 +249,6 @@ namespace Seedborne.Objects
         public void FlowWater(int i, int j)
         {//if tile is water and not local minimum (adjacent tiles are lower depth) tile type changes to land, while adjacent tile becomes water
             var tile = Tiles[i, j];
-            var tileDepth = tile.Depth;
             var rng = new Random();
             var depthSeed = rng.Next(1, 100);
             double avgDepth;
@@ -246,93 +262,111 @@ namespace Seedborne.Objects
             }
             else avgDepth = GetAdjacentTiles(tile)[5] / 8.0;
 
+            SwapTile(tile, avgDepth, depthSeed);
+            
+        }
+
+        public void SwapTile(Tile tile, double avgDepth, int depthSeed)
+        {
+            int i = tile.GetX();
+            int j = tile.GetY();
+            int tileDepth = tile.Depth;
+            var rng = new Random();
+
             if (tile.GetGroundType() == "water" && tileDepth > avgDepth)
             {//if tile is higher than average tiles and water, "flow" water away from tile
-                if (depthSeed < 33) Tiles[i,j] = new SoilTile(i, j);
+                if (depthSeed < 33) Tiles[i, j] = new SoilTile(i, j);
                 else if (depthSeed < 66) Tiles[i, j] = new GrassTile(i, j);
                 else Tiles[i, j] = new TreeTile(i, j);
 
                 //"flow" only goes in cardinal direction currently
                 var flowSeed = rng.Next(1, 100);
-                Tile flowTile;
-                int x;
-                int y;
 
-                if (flowSeed < 25) //left
+                Pour(i, j, flowSeed, tileDepth);
+            }
+        }
+
+        public void Pour(int i, int j, int flowSeed, int tileDepth)
+        {
+            Tile flowTile;
+            int x;
+            int y;
+
+            if (flowSeed < 25) //left
+            {
+                x = i;
+                if (j > 0)
                 {
-                    x = i;
-                    if (j > 0)
-                    {
-                        y = j - 1;
-                        flowTile = Tiles[x, y];
-                    }
-                    else
-                    {
-                        y = Length - 1;
-                        flowTile = Tiles[x, y];
-                    }
-
-                    if (tileDepth > flowTile.Depth)
-                    {
-                        Tiles[x, y] = new WaterTile(x, y);
-                    }
-                    else
-                    {
-                        flowSeed += 25;
-                    }
+                    y = j - 1;
+                    flowTile = Tiles[x, y];
                 }
-                else if (flowSeed < 50) //up
+                else
                 {
-                    y = j;
-                    if (i > 0)
-                    {
-                        x = i - 1;
-                        flowTile = Tiles[x, y];
-                        if (tileDepth > flowTile.Depth)
-                        {
-                            Tiles[x, y] = new WaterTile(x, y);
-                        }
-                    }
+                    y = Length - 1;
+                    flowTile = Tiles[x, y];
+                }
+
+                if (tileDepth > flowTile.Depth)
+                {
+                    Tiles[x, y] = new WaterTile(x, y);
+                }
+                else
+                {
                     flowSeed += 25;
                 }
-                else if (flowSeed < 75) //right
+            }
+            else if (flowSeed < 50) //up
+            {
+                y = j;
+                if (i > 0)
                 {
-                    x = i;
-                    if (j < Length - 1)
-                    {
-                        y = j + 1;
-                        flowTile = Tiles[x, y];
-                    }
-                    else
-                    {
-                        y = 0;
-                        flowTile = Tiles[x, y];
-                    }
-
+                    x = i - 1;
+                    flowTile = Tiles[x, y];
                     if (tileDepth > flowTile.Depth)
                     {
                         Tiles[x, y] = new WaterTile(x, y);
                     }
-                    else
-                    {
-                        flowSeed += 25;
-                    }
                 }
-                else if (flowSeed < 101) //down
+                flowSeed += 25;
+            }
+            else if (flowSeed < 75) //right
+            {
+                x = i;
+                if (j < Length - 1)
                 {
-                    y = j;
-                    if (i < Height - 1)
+                    y = j + 1;
+                    flowTile = Tiles[x, y];
+                }
+                else
+                {
+                    y = 0;
+                    flowTile = Tiles[x, y];
+                }
+
+                if (tileDepth > flowTile.Depth)
+                {
+                    Tiles[x, y] = new WaterTile(x, y);
+                }
+                else
+                {
+                    flowSeed += 25;
+                }
+            }
+            else if (flowSeed < 101) //down
+            {
+                y = j;
+                if (i < Height - 1)
+                {
+                    x = i + 1;
+                    flowTile = Tiles[x, y];
+                    if (tileDepth > flowTile.Depth)
                     {
-                        x = i + 1;
-                        flowTile = Tiles[x, y];
-                        if (tileDepth > flowTile.Depth)
-                        {
-                            Tiles[x, y] = new WaterTile(x, y);
-                        }
+                        Tiles[x, y] = new WaterTile(x, y);
                     }
                 }
             }
         }
+
 
         public void Refine()
         {//refinement (using Conway's Game of Life)
@@ -360,7 +394,7 @@ namespace Seedborne.Objects
                          make it so water is more grouped together
                          less small creeks/streams etc. 
                         */
-                        if (waterValue == 0 || (waterValue <= 3 && refineSeed < 50))
+                        if (waterValue == 0 || (waterValue <= 3 && refineSeed < 40))
                         {
                             Tiles[i,j] = new SoilTile(i,j);
                         }
@@ -368,17 +402,21 @@ namespace Seedborne.Objects
                     //else if (tile.GetGroundType() == "soil")
                     //{
                     //    /*
-                    //     soil could either spontaneously become water or grass
+                    //     soil could spontaneously become another tile type
                     //     depending on conditions
                     //     */
-                    //    if (refineSeed < 5)
+                    //    if (refineSeed < 10)
                     //    {
                     //        Tiles[i,j] = new WaterTile(i,j);
                     //    }
-                    //    else if (refineSeed < 20)
+                    //    else if (refineSeed < 15)
                     //    {
                     //        Tiles[i,j] = new GrassTile(i,j);
                     //        continue;
+                    //    }
+                    //    else if (refineSeed < 20)
+                    //    {
+                    //        Tiles[i,j] = new TreeTile(i,j);
                     //    }
                     //}
                     else 
@@ -388,7 +426,7 @@ namespace Seedborne.Objects
                          water eventually overruns the world if refined enough times
                          need to find a way for it to stagnate
                         */
-                        if (waterValue == 8 ||(waterValue >= 3 && refineSeed < 33))
+                        if (waterValue == 8 ||(waterValue >= 3 && refineSeed < 35) || (waterValue >=3 && tile.Depth == 0 && refineSeed < 50))
                         {
                             Tiles[i,j] = new WaterTile(i,j);
                         }
@@ -397,7 +435,7 @@ namespace Seedborne.Objects
                     if (tile.GetGroundType() == "tree")
                     {
                         //chance for surrounded trees to become forests (if no forests adjacent and if there aren't too many already)
-                        if (treeValue >= 4 && forestValue < 1 && refineSeed > 95 && TileStats[4] < (Length*Height*4))
+                        if (treeValue >= 4 && forestValue < 1 && refineSeed < 5 && TileStats[4] < (Length*Height*4))
                         {
                             GrowForest(i, j);
                         }
